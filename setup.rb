@@ -34,6 +34,6 @@ hash[:refresh_token] = client.authorization.refresh_token
 hash[:access_token] = client.authorization.access_token
 
 str = YAML.dump(hash)
-File.write("config.yaml", str)
+File.write("google.yaml", str)
 
 
