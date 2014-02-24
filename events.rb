@@ -20,14 +20,14 @@ class Events
 
   def output
     {
-      'summary' => "#{people}@#{place}",
+      'summary' => "#{@people}@#{@place}",
       'start' => {
         'dateTime' => Time.utc(0, @time[:min], @time[:hour] - 9 , @date[:day], @date[:month], CONFIG[:year], nil, nil, false, nil).iso8601
       },
       'end' => {
-        'dateTime' => Time.utc(0, @time[:min], @time[:hour] - 9 + 12, @date[:day], @date[:month], CONFIG[:year], nil, nil, false, nil).iso8601
+        'dateTime' => Time.utc(0, @time[:min], @time[:hour] - 9 + 2, @date[:day], @date[:month], CONFIG[:year], nil, nil, false, nil).iso8601
       },
-      'location' => @place[:place]
+      'location' => @place
     }  	
   end
   
