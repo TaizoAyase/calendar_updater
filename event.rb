@@ -2,21 +2,55 @@
 
 require 'bundler'
 Bundler.require
+
 require 'open-uri'
 
 class Event
   CONFIG = YAML.load_file("./config.yaml")
 
-  # get evets list from web site
-  # return the ary of Event
-  def self.get_events
-    doc = Nokogiri::HTML(open(CONFIG[:target_url]))
-    doc.css("div > table > tbody > tr").each do |tr|
-      ary_tmp = []
-      tr.children.each do |td|
-        ary_tmp << td.content.encode('utf-8')
-      end
+  # some class methods
+  class << self
+    # get evets list from web site
+    # return the ary of Event
+    def get_events
+      events_ary = []
 
+      doc = Nokogiri::HTML(open(CONFIG[:target_url]))
+      doc.css("div > table > tbody > tr").each do |tr|
+        ary_tmp = []
+        tr.children.each do |td|
+          ary_tmp << td.content.encode('utf-8')
+        end
+        hash_table = ary_to_hash(ary_tmp)
+        next unless hash_table # when date is not determined
+        events_ary << Event.new(hash_table)
+      end
+      events_ary
+    end
+
+    private
+
+    def ary_to_hash(ary)
+      # when the date is not determined, return nil
+      return nil unless ary.first
+
+      hash = {}; hash[:date] = {}; hash[:time] = {}
+      hash[:date][:month], hash[:date][:day] = get_date(ary[0])
+      hash[:time][:hour], hash[:time][:min] = get_time(ary[1])
+      hash[:place] = ary[2]
+      hash[:people] = ary[3]
+
+      hash 
+    end
+
+    def get_date(str)
+      str =~ /(\d+)月(\d+)日/
+        return $1, $2
+    end
+
+    def get_time(str)
+      str =~ /(\d+):(\d+)/
+        return $1, $2
     end
   end
 
