@@ -4,6 +4,8 @@ require 'bundler'
 Bundler.require
 
 require 'open-uri'
+require 'yaml'
+require 'json'
 
 class Event
   CONFIG = YAML.load_file("./config.yaml")
@@ -26,6 +28,11 @@ class Event
         events_ary << Event.new(hash_table)
       end
       events_ary
+    end
+
+    def load(str)
+      hash = JSON.parse(str)
+      Event.new(hash)
     end
 
     private
@@ -57,6 +64,7 @@ class Event
   # initialize with;
   # hash[:date > :month/:day],[:time > :hour/:min],[:people],[:place]
   def initialize(hash)
+    @hash = hash
     @date = hash[:date]
     @time = hash[:time]
     @people = hash[:people]
@@ -75,5 +83,30 @@ class Event
       'location' => @place
     }  	
   end
+
+  def to_s
+    @hash.to_s
+  end
+
+  def dump
+    JSON.dump(@hash)
+  end
+
+  def ==(other)
+    raise ArgumentError unless other.class.to_s == "Event"
+    JSON.dump(self) == JSON.dump(other)
+  end
   
+end
+
+if __FILE__ == $0
+  ary = Event.get_events
+  puts ary
+
+  puts "Dumping..."
+  puts dump = ary.first.dump
+
+  puts "Loading..."
+  event = Event.load(dump)
+  puts event
 end
