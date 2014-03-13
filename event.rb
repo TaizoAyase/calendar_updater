@@ -30,6 +30,8 @@ class Event
       events_ary
     end
 
+    # load from JSON string
+    # cf. Event#dump
     def load(str)
       hash = JSON.parse(str)
       Event.new(hash)
@@ -71,6 +73,7 @@ class Event
     @place = hash[:place]
   end
 
+  # output method for google calendar event insertion
   def output
     {
       'summary' => "#{@people}@#{@place}",
@@ -94,7 +97,7 @@ class Event
 
   def ==(other)
     raise ArgumentError unless other.class.to_s == "Event"
-    JSON.dump(self) == JSON.dump(other)
+    self.dump == other.dump
   end
   
 end
@@ -109,4 +112,7 @@ if __FILE__ == $0
   puts "Loading..."
   event = Event.load(dump)
   puts event
+
+  puts event == ary.first
+  puts event == ary.last
 end
