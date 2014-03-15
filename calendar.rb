@@ -14,11 +14,14 @@ class SeminarCalender
   APP_NAME = "CalendarUpdater"
   VERSION = "beta"
 
-  attr_reader :events_list
-
   def initialize
     authorize # set @client
     fetch_events # set @events_list
+  end
+
+  def events_list
+    fetch_events
+    @events_list
   end
 
   def insert_event(event)
@@ -48,8 +51,8 @@ class SeminarCalender
   def fetch_events
     params = {'calendarId' => CONFIG[:cal_id], 
               'orderBy' => 'startTime',
-              'timeMax' => Time.utc(CONFIG[:year].to_i + 1, 1, 4).iso8601, 
-              'timeMin' => Time.utc(CONFIG[:year].to_i, 1, 4).iso8601,
+              'timeMax' => Time.utc(CONFIG[:year].to_i + 1, 4, 1).iso8601, 
+              'timeMin' => Time.utc(CONFIG[:year].to_i, 4, 1).iso8601,
               'singleEvents' => 'True'}
     
     result = @client.execute(:api_method => @cal.events.list, :parameters => params)
@@ -63,5 +66,7 @@ end
 
 if __FILE__ == $0
   cal = SeminarCalender.instance
-  puts cal.events_list
+  puts cal.events_list.class
+  puts cal.events_list.first.class
+  puts cal.events_list.first.id
 end
