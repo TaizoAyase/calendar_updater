@@ -25,11 +25,18 @@ class SeminarCalender
   end
 
   def insert_event(event)
-    result = @client.execute(:api_method => cal.events.insert,
-                 :parameters => {'calendarId' => CONFIG[:cal_id]},
-                 :body => JSON.dump(event),
-                 :headers => {'Content-Type' => 'application/json'})
-    result.status
+    result = @client.execute(:api_method => @cal.events.insert,
+                             :parameters => {'calendarId' => CONFIG[:cal_id]},
+                             :body => JSON.dump(event),
+                             :headers => {'Content-Type' => 'application/json'})
+    result
+  end
+
+  def delete_event(event_id)
+    result = @client.execute(:api_method => @cal.events.delete,
+                             :parameters => {'calendarId' => CONFIG[:cal_id],
+                                             'eventId'    => event_id})
+    result 
   end
 
   private

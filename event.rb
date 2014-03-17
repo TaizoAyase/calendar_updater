@@ -75,13 +75,17 @@ class Event
 
   # output method for google calendar event insertion
   def output
+    case @date[:month].to_i
+    when 4..12 then year = CONFIG[:year].to_i
+    when 1..3 then year = CONFIG[:year].to_i + 1
+    end
     {
       'summary' => "#{@people}@#{@place}",
       'start' => {
-        'dateTime' => Time.utc(0, @time[:min], @time[:hour] - 9 , @date[:day], @date[:month], CONFIG[:year], nil, nil, false, nil).iso8601
+        'dateTime' => Time.utc(0, @time[:min], @time[:hour].to_i - 9 , @date[:day], @date[:month], year, nil, nil, false, nil).iso8601
       },
       'end' => {
-        'dateTime' => Time.utc(0, @time[:min], @time[:hour] - 9 + CONFIG[:duration], @date[:day], @date[:month], CONFIG[:year], nil, nil, false, nil).iso8601
+        'dateTime' => Time.utc(0, @time[:min], @time[:hour].to_i - 9 + CONFIG[:duration], @date[:day], @date[:month], year, nil, nil, false, nil).iso8601
       },
       'location' => @place
     }  	
