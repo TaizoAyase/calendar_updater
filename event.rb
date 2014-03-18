@@ -25,16 +25,26 @@ class Event
         end
         hash_table = ary_to_hash(ary_tmp)
         next unless hash_table # when date is not determined
-        events_ary << Event.new(hash_table)
+        begin
+          events_ary << Event.new(hash_table)
+        rescue NoScheduleError
+          next
+        end
       end
       events_ary
     end
 
-    # load from JSON string
+    # load from JSON string to Event obj.
     # cf. Event#dump
     def load(str)
-      hash = JSON.parse(str)
-      Event.new(hash)
+      hash = JSON.parse(str, {:symbolize_names => true})
+      p hash
+      puts hash.class
+      begin
+        Event.new(hash)
+      rescue NoScheduleError
+        nil
+      end
     end
 
     private
@@ -54,12 +64,12 @@ class Event
 
     def get_date(str)
       str =~ /(\d+)月(\d+)日/
-        return $1, $2
+      return $1, $2
     end
 
     def get_time(str)
       str =~ /(\d+):(\d+)/
-        return $1, $2
+      return $1, $2
     end
   end
 
@@ -71,6 +81,9 @@ class Event
     @time = hash[:time]
     @people = hash[:people]
     @place = hash[:place]
+
+    # not create object if date/time is not set
+    raise NoScheduleError unless (@date[:day] && @date[:month] && @time[:hour] && @time[:min])
   end
 
   # output method for google calendar event insertion
@@ -95,6 +108,7 @@ class Event
     @hash.to_s
   end
 
+  # for saving the object to JSON txt format
   def dump
     JSON.dump(@hash)
   end
@@ -103,8 +117,9 @@ class Event
     raise ArgumentError unless other.class.to_s == "Event"
     self.dump == other.dump
   end
-  
 end
+
+class NoScheduleError < StandardError; end
 
 if __FILE__ == $0
   ary = Event.get_events
