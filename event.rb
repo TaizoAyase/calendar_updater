@@ -6,6 +6,7 @@ Bundler.require
 require 'open-uri'
 require 'yaml'
 require 'json'
+require 'set'
 
 class Event
   CONFIG = YAML.load_file("./config.yaml")
@@ -38,8 +39,6 @@ class Event
     # cf. Event#dump
     def load(str)
       hash = JSON.parse(str, {:symbolize_names => true})
-      p hash
-      puts hash.class
       begin
         Event.new(hash)
       rescue NoScheduleError
@@ -73,6 +72,9 @@ class Event
     end
   end
 
+  # set default year as Time.now
+  @@year = Time.now.year
+
   # initialize with;
   # hash[:date > :month/:day],[:time > :hour/:min],[:people],[:place]
   def initialize(hash)
@@ -89,8 +91,8 @@ class Event
   # output method for google calendar event insertion
   def output
     case @date[:month].to_i
-    when 4..12 then year = CONFIG[:year].to_i
-    when 1..3 then year = CONFIG[:year].to_i + 1
+    when 4..12 then year = Time.now.year
+    when 1..3 then year = Time.now.year + 1
     end
     {
       'summary' => "#{@people}@#{@place}",
@@ -117,6 +119,9 @@ class Event
     raise ArgumentError unless other.class.to_s == "Event"
     self.dump == other.dump
   end
+
+  alias :eql? :==
+  alias :equal? :==
 end
 
 class NoScheduleError < StandardError; end
@@ -132,6 +137,6 @@ if __FILE__ == $0
   event = Event.load(dump)
   puts event
 
-  puts event == ary.first
-  puts event == ary.last
+  puts event.equal? ary.first
+  puts event.equal? ary.last
 end

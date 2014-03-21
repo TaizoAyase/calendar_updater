@@ -6,7 +6,7 @@ require 'singleton'
 require 'yaml'
 require 'json'
 
-class SeminarCalender
+class SeminarCalendar
   include Singleton
 
   AUTH = YAML.load_file("./google.yaml")
@@ -58,8 +58,8 @@ class SeminarCalender
   def fetch_events
     params = {'calendarId' => CONFIG[:cal_id], 
               'orderBy' => 'startTime',
-              'timeMax' => Time.utc(CONFIG[:year].to_i + 1, 4, 1).iso8601, 
-              'timeMin' => Time.utc(CONFIG[:year].to_i, 4, 1).iso8601,
+              #'timeMax' => Time.utc(CONFIG[:year].to_i + 1, 4, 1).iso8601, 
+              #'timeMin' => Time.utc(CONFIG[:year].to_i, 4, 1).iso8601,
               'singleEvents' => 'True'}
     
     result = @client.execute(:api_method => @cal.events.list, :parameters => params)
