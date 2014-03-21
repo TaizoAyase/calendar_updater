@@ -6,6 +6,8 @@ Bundler.require
 require './event'
 require './calendar'
 
+puts Time.now
+
 # fetch the events from web
 events_onWeb = Event.get_events
 
@@ -48,13 +50,17 @@ end
 cal = SeminarCalendar.instance
 
 # delete all events on google cal
+puts "Deleting events..."
 cal.events_list.each do |event|
-  cal.delete_event(event.id)
+  result = cal.delete_event(event.id)
+  puts "#{result.status} for #{event.summary}"
 end
 
 # make event on google 
+puts "Making events..."
 events_onWeb.each do |event|
-  cal.insert_event(event.output)
+  result = cal.insert_event(event.output)
+  puts "#{result.status} for #{event.people}"
 end
 
 # dump to tmp file as old file

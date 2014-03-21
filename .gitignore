@@ -1,0 +1,11 @@
+vendor/
+vendor/*
+.bundle
+*.json
+*.yaml
+tmp/
+tmp/*
+log/
+log/*
+*.swp
+*~

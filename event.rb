@@ -74,6 +74,8 @@ class Event
   # set default year as Time.now
   @@year = Time.now.year
 
+  attr_reader :people
+
   # initialize with;
   # hash[:date > :month/:day],[:time > :hour/:min],[:people],[:place]
   def initialize(hash)
@@ -89,10 +91,13 @@ class Event
 
   # output method for google calendar event insertion
   def output
-    case @date[:month].to_i
-    when 4..12 then year = Time.now.year
-    when 1..3 then year = Time.now.year + 1
-    end
+    # TODO
+    ### dirty fix for set proper year ###
+    #case @date[:month].to_i
+    #when 4..12 then year = Time.now.year
+    #when 1..3 then year = Time.now.year + 1
+    #end
+    year = Time.now.year
     {
       'summary' => "#{@people}@#{@place}",
       'start' => {
