@@ -5,7 +5,6 @@ Bundler.require
 
 require './event'
 require './calendar'
-require 'set'
 
 # fetch the events from web
 events_onWeb = Event.get_events

@@ -6,7 +6,6 @@ Bundler.require
 require 'open-uri'
 require 'yaml'
 require 'json'
-require 'set'
 
 class Event
   CONFIG = YAML.load_file("./config.yaml")
