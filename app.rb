@@ -31,6 +31,7 @@ begin
   f.close
 rescue => e
   puts e
+  puts e.message
   events_local = []
 end
 
@@ -63,14 +64,14 @@ cal = SeminarCalendar.instance
 puts "Deleting events..."
 cal.events_list.each do |event|
   result = cal.delete_event(event.id)
-  puts "#{result.status} for #{event.summary}"
+  puts "#{result.status} for #{event.summary}".encode('utf-8')
 end
 
 # make event on google 
 puts "Making events..."
 events_onWeb.each do |event|
   result = cal.insert_event(event.output)
-  puts "#{result.status} for #{event.people}"
+  puts "#{result.status} for #{event.people}".encode('utf-8')
 end
 
 # dump to tmp file as old file
@@ -80,5 +81,5 @@ events_onWeb.each do |event|
 end
 
 File.open('./tmp/event_old.json', 'w+') do |out_file|
-  out_file.puts ary
+  out_file.puts ary.to_s.encode('utf-8')
 end
