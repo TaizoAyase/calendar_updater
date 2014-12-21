@@ -3,8 +3,18 @@
 require 'bundler'
 Bundler.require
 
+require 'yaml'
 require './event'
 require './calendar'
+
+CONFIG = YAML.load_file("./config.yaml")
+last_mod_time = Marshal.load(File.read("./tmp/timestamp.tmp"))
+mod_time = File.mtime(CONFIG[:target_path])
+if mod_time <= last_mod_time
+  puts "List is not modified."
+  exit(status = true)
+end
+
 
 puts Time.now
 
