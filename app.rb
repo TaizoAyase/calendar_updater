@@ -15,6 +15,11 @@ if mod_time <= last_mod_time
   exit(status = true)
 end
 
+# 150112FIX
+# mod_time was not written to tmp file
+File.write("./tmp/timestamp.tmp", 'w') do |f|
+  f.puts Marshal.dump(mod_time)
+end
 
 puts Time.now
 
