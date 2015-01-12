@@ -17,9 +17,7 @@ end
 
 # 150112FIX
 # mod_time was not written to tmp file
-File.write("./tmp/timestamp.tmp", 'w') do |f|
-  f.puts Marshal.dump(mod_time)
-end
+File.open("./tmp/timestamp.tmp", Marshal.dump(mod_time))
 
 puts Time.now
 
