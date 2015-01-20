@@ -17,7 +17,7 @@ end
 
 # 150112FIX
 # mod_time was not written to tmp file
-File.open("./tmp/timestamp.tmp", Marshal.dump(mod_time))
+File.write("./tmp/timestamp.tmp", Marshal.dump(mod_time))
 
 puts Time.now
 
